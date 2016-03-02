@@ -50,9 +50,11 @@ class ViewController: UIViewController ,UITableViewDataSource {
     //MARK: - View Controller Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-    
+        fetchName()
         title = "\"The List\""
     }
+    
+
 
     //MARK: - UITableViewDataSource
     
@@ -70,33 +72,55 @@ class ViewController: UIViewController ,UITableViewDataSource {
         
         return cell
     }
+    
     //MARK: - saveName Function
     
     func saveName (name : String) {
         
-    //1 - Access ManagedObjectContext which lives in AppDelegate, to access it you must get reference of AppDelegate first
-    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-    
-    let managedContext = appDelegate.managedObjectContext
+        //1 - Access ManagedObjectContext which lives in AppDelegate, to access it you must get reference of AppDelegate first
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         
-    //2 - Create a new managedObject and insert it into a managed object context . 
-    let entity  = NSEntityDescription.entityForName("Person", inManagedObjectContext: managedContext)
+        let managedContext = appDelegate.managedObjectContext
+            
+        //2 - Create a new managedObject and insert it into a managed object context . 
+        let entity  = NSEntityDescription.entityForName("Person", inManagedObjectContext: managedContext)
+        
+        let person = NSManagedObject(entity: entity!, insertIntoManagedObjectContext: managedContext)
+        
+        //3 - With an NSManagedObject , set the name attribute using key-value coding
+        person.setValue(name, forKey: "name")
+        
+        //4 - Commit the changes to person and save to disk by calling save on the managed object context
     
-    let person = NSManagedObject(entity: entity!, insertIntoManagedObjectContext: managedContext)
+        do {
+            try managedContext.save()
+            people.append(person)//to show person when tableView reloads
+        }catch let error as NSError{
+            print("Could not save \(error),\(error.userInfo)")
+        }
     
-    //3 - With an NSManagedObject , set the name attribute using key-value coding
-    person.setValue(name, forKey: "name")
-    
-    //4 - Commit the changes to person and save to disk by calling save on the managed object context
-    
-    do {
-        try managedContext.save()
-        people.append(person)//to show person when tableView reloads
-    }catch let error as NSError{
-        print("Could not save \(error),\(error.userInfo)")
+  
+        
     }
-        
     
+    
+    //MARK: - fetchName Function
+    
+    func fetchName () {
+        //1 - before we do anything in CoreData , we need a managed object context . Pull up AppDelegate and grab a referance to its managed object context.
+        let appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate
+        let managedContext = appDelegate?.managedObjectContext
+        
+        //2 - Make Fetching request via NSFetchRequest
+        let fetchRequest = NSFetchRequest(entityName: "Person")
+        
+        //3 - Return an array of managed context that specified by fetch request
+        do {
+            let results = try managedContext?.executeFetchRequest(fetchRequest)
+            people = results as! [NSManagedObject]
+        }catch let error as NSError{
+            print("Could not fetch \(error),\(error.userInfo)")
+        }
         
     }
     
