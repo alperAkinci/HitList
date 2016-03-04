@@ -19,4 +19,4 @@ Core Data by Tutorials By the raywenderlich.com
   -NSManagedObject a “shape-shifter” class because it can represent any entity.
   - ***An entity description is the piece that links the entity definition from your data model with an instance of NSManagedObject at runtime.
   
-Referance from Core Data by Tutorials book, available at http://www.raywenderlich.com.”
+Referance from Core Data by Tutorials book, available at http://www.raywenderlich.com.
