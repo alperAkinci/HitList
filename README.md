@@ -4,6 +4,7 @@ Core Data by Tutorials By the raywenderlich.com
 
 ##Chapter 1 : Your First Core Data App 
 ####HitList App
+A simple tableView with the list of names . Core data stores the name that you added in each session.
 
 - ### Starting Notes
   - Core Data entity as a class “definition” and the managed object as an instance of that class.
